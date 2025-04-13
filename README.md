@@ -169,6 +169,4 @@ git push -u origin master
 
 ## Screenshot from DockerHub
 
-> Replace with your actual screenshot  
 ![DockerHub](./images/dockerhub-screenshot.png)
-
