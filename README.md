@@ -1,4 +1,4 @@
-# 🧩 Microservices Web App with Node.js, PostgreSQL, and Docker Compose
+# Microservices Web App with Node.js, mongodb, and Docker Compose
 
 This project is a full-stack microservices-based application built with a Node.js backend, a frontend client, and a mongodb database. The application is fully containerized using Docker and orchestrated with Docker Compose.
 
@@ -74,7 +74,7 @@ EXPOSE 3000
 CMD ["npm", "start"]
 
 
-## 🔧 docker-compose.yml
+## docker-compose.yml
 
 version: "3.8"
 
@@ -167,6 +167,14 @@ git push -u origin master
 - Volume usage for database persistence.
 - Custom bridge network to isolate services.
 
+## Docker pull images
+
+docker pull marigah/yolo_app-client
+
+docker pull marigah/yolo_app-backend
+
 ## Screenshot from DockerHub
 
 ![DockerHub](./images/dockerhub-screenshot.png)
+
+
