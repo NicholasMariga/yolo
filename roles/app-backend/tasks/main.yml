@@ -1,2 +1,14 @@
 ---
-# tasks file for roles/app-backend
+- name: Build and run backend container
+  community.docker.docker_container:
+    name: app-backend
+    build:
+      path: "{{ app_dir }}/backend"
+    state: started
+    restart_policy: always
+    ports:
+      - "5000:5000"
+    networks:
+      - name: app-net
+    depends_on:
+      - app-ip-mongo

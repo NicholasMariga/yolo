@@ -1,2 +1,23 @@
 ---
-# tasks file for roles/app-mongodb
+- name: Create Docker network
+  community.docker.docker_network:
+    name: app-net
+    driver: bridge
+
+- name: Start MongoDB container
+  community.docker.docker_container:
+    name: app-ip-mongo
+    image: mongo
+    state: started
+    restart_policy: always
+    ports:
+      - "27017:27017"
+    networks:
+      - name: app-net
+    volumes:
+      - name: app-mongo-data
+        mount_path: /data/db
+
+- name: Create MongoDB Docker volume
+  community.docker.docker_volume:
+    name: app-mongo-data

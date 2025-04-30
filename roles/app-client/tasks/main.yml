@@ -1,2 +1,13 @@
 ---
-# tasks file for roles/app-client
+- name: Build and run frontend container
+  community.docker.docker_container:
+    name: app-client
+    build:
+      path: "{{ app_dir }}/client"
+    state: started
+    ports:
+      - "3000:3000"
+    networks:
+      - name: app-net
+    depends_on:
+      - app-backend

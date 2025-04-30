@@ -1,4 +1,8 @@
-roles:
+First commit
+-- Delete defaults
+
+Second commit
+--roles initialization
 app-client
 app-backend
 app-mongodb
@@ -6,6 +10,12 @@ app-mongodb
 ansible-galaxy init roles/app-client
 ansible-galaxy init roles/app-backend
 ansible-galaxy init roles/app-mongodb
+ansible-galaxy collection install community.docker
+
+Third commit:
+--update the task for each roles as per the docker-compose.yml file
+
+
 
 
 
