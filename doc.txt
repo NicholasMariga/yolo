@@ -1,0 +1,13 @@
+roles:
+app-client
+app-backend
+app-mongodb
+
+ansible-galaxy init roles/app-client
+ansible-galaxy init roles/app-backend
+ansible-galaxy init roles/app-mongodb
+
+
+
+
+
