@@ -19,4 +19,17 @@ Fourth Commit:
 --Create the main playbook.yml then update it with cloninf from github task, installing dependences and reference different roles
 
 
+vagrant init geerlingguy/ubuntu2004
 
+Run this to start your VM and automatically apply the playbook:
+
+vagrant up --provision
+
+Or, if the VM is already up:
+
+vagrant provision
+
+
+
+Fifth commit:
+-- Create/update ansible.cfg hosts
