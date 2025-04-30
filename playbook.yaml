@@ -1,0 +1,32 @@
+---
+- name: Deploy YOLO Application
+  hosts: all
+  become: yes
+
+  vars:
+    app_dir: /opt/yolo
+
+
+  pre_tasks:
+    - name: Install dependencies
+      package:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - git
+        - python3-pip
+
+    - name: Install Docker SDK for Python
+      pip:
+        name: docker
+
+    - name: Clone YOLO repo from my github repo
+      git:
+        repo: https://github.com/NicholasMariga/yolo.git
+        dest: "{{ app_dir }}"
+        force: yes
+
+  roles:
+    - role: mongo
+    - role: backend
+    - role: client

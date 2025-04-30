@@ -15,9 +15,8 @@ ansible-galaxy collection install community.docker
 Third commit:
 --update the task for each roles as per the docker-compose.yml file
 
-
-
-
+Fourth Commit:
+--Create the main playbook.yml then update it with cloninf from github task, installing dependences and reference different roles
 
 
 
