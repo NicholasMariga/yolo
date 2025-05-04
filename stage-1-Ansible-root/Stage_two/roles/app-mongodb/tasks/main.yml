@@ -1,0 +1,30 @@
+---
+- name: Create MongoDB Docker volume
+  community.docker.docker_volume:
+    name: app-mongo-data
+  become: true
+
+- name: Create Docker network
+  community.docker.docker_network:
+    name: app-net
+    driver: bridge
+  become: true
+
+- name: Start MongoDB container
+  community.docker.docker_container:
+    name: app-ip-mongo
+    image: mongo
+    state: started
+    restart_policy: always
+    published_ports:
+      - "27017:27017"
+    networks:
+      - name: app-net
+    stdin_open: true
+    tty: yes
+    interactive: yes
+    volumes:
+      - source: app-mongo-data
+        target: /data/db
+        type: volume
+  become: true

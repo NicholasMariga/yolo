@@ -1,0 +1,52 @@
+First commit
+-- Delete defaults
+
+Second commit
+--roles initialization
+app-client
+app-backend
+app-mongodb
+
+ansible-galaxy init roles/app-client
+ansible-galaxy init roles/app-backend
+ansible-galaxy init roles/app-mongodb
+ansible-galaxy collection install community.docker
+
+Third commit:
+--update the task for each roles as per the docker-compose.yml file
+
+Fourth Commit:
+--Create the main playbook.yml then update it with cloninf from github task, installing dependences and reference different roles
+
+Fifth Commit:
+-- Initialize box image
+vagrant init geerlingguy/ubuntu2004
+
+Sixth commit:
+--Update Vagrantfile to use the playbook.yaml
+  # Reference Ansible playbook
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yaml"
+  end
+
+Run this to start your VM and automatically apply the playbook:
+
+Seventh commit:
+-- Update the Vagrantfile network so that i have bridged network
+  config.vm.network "public_network"
+
+vagrant up --provision
+
+Or, if the VM is already up:
+
+vagrant provision
+
+
+
+Fifth commit:
+-- Create/update ansible.cfg hosts
+
+
+
+
+Another commit
