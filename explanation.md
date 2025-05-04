@@ -26,7 +26,6 @@ All containers are connected via Docker network `app-net`
  Automation   --> Ansible        
 
 
-
 ## Docker Containers
 
 1. Frontend Container
@@ -88,8 +87,20 @@ All containers connect to a custom Docker network named `app-net`.
 
 2. After provisioning:
    -  Frontend : `http://<VM-IP>:3000`
-   -  Backend API : `http://<VM-IP>:5000`
+   -  Backend  : `http://<VM-IP>:5000`
 
 Replace `<VM-IP>` with your VirtualBox VM's bridged IP address.
 
 
+## Execution
+
+vagrant up --provision
+
+Or, if the VM is already up:
+
+vagrant provision
+
+
+## Screenshot
+
+![DockerHub](./images/Screenshotfrom2025-05-05 00-21-53.png)
