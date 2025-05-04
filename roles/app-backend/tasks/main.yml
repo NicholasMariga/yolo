@@ -1,14 +1,24 @@
 ---
-- name: Build and run backend container
-  community.docker.docker_container:
+- name: Build backend Docker image
+  community.docker.docker_image:
     name: app-backend
+    source: build
     build:
       path: "{{ app_dir }}/backend"
+    state: present
+  become: true
+
+- name: Start backend container
+  community.docker.docker_container:
+    name: app-backend
+    image: app-backend
     state: started
     restart_policy: always
-    ports:
+    published_ports:
       - "5000:5000"
     networks:
       - name: app-net
-    depends_on:
-      - app-ip-mongo
+    stdin_open: true
+    tty: yes
+    interactive: yes
+  become: true

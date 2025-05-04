@@ -1,13 +1,24 @@
 ---
-- name: Build and run frontend container
-  community.docker.docker_container:
+- name: Build frontend Docker image
+  community.docker.docker_image:
     name: app-client
+    source: build
     build:
       path: "{{ app_dir }}/client"
+    state: present
+  become: true
+
+- name: Start frontend container
+  community.docker.docker_container:
+    name: app-client
+    image: app-client
     state: started
-    ports:
+    published_ports:
       - "3000:3000"
     networks:
       - name: app-net
-    depends_on:
-      - app-backend
+    stdin_open: true
+    tty: yes
+    interactive: yes
+    restart_policy: always
+  become: true

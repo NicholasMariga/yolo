@@ -8,6 +8,26 @@
 
 
   pre_tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Clone YOLO repo from my github repo
+      git:
+        repo: https://github.com/NicholasMariga/yolo.git
+        dest: "{{ app_dir }}"
+        force: yes
+
+    - name: Install Docker
+      package:
+        name: docker
+        state: present
+    - name: Install Docker Compose
+      package:
+        name: docker-compose
+        state: present
+
     - name: Install dependencies
       package:
         name: "{{ item }}"
@@ -16,17 +36,13 @@
         - git
         - python3-pip
 
-    - name: Install Docker SDK for Python
+    - name: Install Docker Python SDK
       pip:
         name: docker
+        state: present
 
-    - name: Clone YOLO repo from my github repo
-      git:
-        repo: https://github.com/NicholasMariga/yolo.git
-        dest: "{{ app_dir }}"
-        force: yes
 
   roles:
-    - role: mongo
-    - role: backend
-    - role: client
+    - role: app-mongodb
+    - role: app-client
+    - role: app-backend

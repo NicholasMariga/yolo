@@ -18,10 +18,22 @@ Third commit:
 Fourth Commit:
 --Create the main playbook.yml then update it with cloninf from github task, installing dependences and reference different roles
 
-
+Fifth Commit:
+-- Initialize box image
 vagrant init geerlingguy/ubuntu2004
 
+Sixth commit:
+--Update Vagrantfile to use the playbook.yaml
+  # Reference Ansible playbook
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yaml"
+  end
+
 Run this to start your VM and automatically apply the playbook:
+
+Seventh commit:
+-- Update the Vagrantfile network so that i have bridged network
+  config.vm.network "public_network"
 
 vagrant up --provision
 
@@ -33,3 +45,8 @@ vagrant provision
 
 Fifth commit:
 -- Create/update ansible.cfg hosts
+
+
+
+
+Another commit
