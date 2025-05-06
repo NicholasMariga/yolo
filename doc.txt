@@ -35,12 +35,15 @@ Seventh commit:
 -- Update the Vagrantfile network so that i have bridged network
   config.vm.network "public_network"
 
+Eight commit:
+--Update tsaks for each role so that containers run in an interractive terminal to  avoid app-client exiting 
+
+
 vagrant up --provision
 
 Or, if the VM is already up:
 
 vagrant provision
-
 
 
 Fifth commit:
@@ -49,4 +52,3 @@ Fifth commit:
 
 
 
-Another commit
