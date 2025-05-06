@@ -1,4 +1,6 @@
-# YOLO App – Containerized Fullstack Application
+YOLO APP - EXPLANATION
+
+This document explains how the YOLO App was implemented, highlighting the use of Vagrant, Ansible roles, Docker containers, and the step-by-step logic used.
 
 ##  Overview
 

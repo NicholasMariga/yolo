@@ -1,180 +1,119 @@
-# Microservices Web App with Node.js, mongodb, and Docker Compose
 
-This project is a full-stack microservices-based application built with a Node.js backend, a frontend client, and a mongodb database. The application is fully containerized using Docker and orchestrated with Docker Compose.
+YOLO App Deployment with Vagrant and Ansible
+
+Project Overview
+
+This project demonstrates the automated provisioning and configuration of a 3-tier containerized web application called YOLO App, consisting of:
+
+- app-client (React frontend)
+- app-backend (Node.js backend)
+- app-ip-mongo (MongoDB)
+
+We use:
+- Vagrant for VM provisioning (VirtualBox),
+- Ansible for configuration management (roles, tasks),
+- Docker and Docker Compose to containerize and deploy the application.
+
+Tech Stack
+
+| Layer         | Technology          |
+|---------------|---------------------|
+| Provisioning  | Vagrant (VirtualBox)|
+| OS            | Ubuntu 20.04        |
+| Configuration | Ansible             |
+| Runtime       | Docker              |
+| Backend       | Node.js             |
+| Frontend      | React               |
+| Database      | MongoDB             |
+
+Directory Structure
+
+├── Vagrantfile
+├── ansible.cfg
+├── inventory.yml
+├── hosts
+├── playbook.yaml
+├── backend
+├── client
+├── images
+├── roles/
+│   ├── app-mongodb/
+│   │   └── tasks/main.yml
+│   ├── app-backend/
+│   │   └── tasks/main.yml
+│   ├── app-client/
+│   │   └── tasks/main.yml
+
+VM Provisioning
+
+We use Vagrant to provision a VirtualBox VM with bridged networking:
+
+Vagrantfile (Summary)
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "geerlingguy/ubuntu2004"
+  config.vm.network "public_network" # Bridged
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "playbook.yaml"
+  end
+end
+
+Configuration Management with Ansible
+
+Ansible is structured using roles, with each major app component having its own role.
+
+Main Playbook: deploy.yml
 
 ---
+- name: Deploy YOLO App Stack
+  hosts: all
+  become: true
 
-## Core Project Structure
+  roles:
+    - app-mongodb
+    - app-backend
+    - app-client
 
-.
-├── backend/
-│   ├── Dockerfile
-│   ├── server.js
-│   └── package.json
-├── client/
-│   ├── Dockerfile
-│   ├── package.json
-│   └── ...
-├── docker-compose.yml
-└── README.md
+Role Breakdown
 
-## How to Run the Application
+1. app-mongodb
+- Creates Docker volume (app-mongo-data)
+- Creates Docker network (app-net)
+- Starts MongoDB container
 
-### Prerequisites
+2. app-backend
+- Builds image from backend/Dockerfile
+- Starts container and connects to MongoDB
 
-- Docker
-- Docker Compose
-- Git
-- Vagrant (optional if using `vagrant up --provision`)
+3. app-client
+- Builds React frontend image
+- Starts container and connects to backend
 
-### Steps
+Container Networking
 
-# Clone the repository
-git clone https://github.com/NicholasMariga/yolo.git
-cd yolo
-
-# Run the application
-docker-compose up --build
-
-### Access the services
-
-- Backend API: http://localhost:5000
-- Frontend Client: http://localhost:3000
-
-## Dockerfile Breakdown
-
-### Backend Dockerfile
-
-FROM node:14 AS build
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
-COPY . .
-
-FROM alpine:3.16.7
-WORKDIR /app
-RUN apk update && apk add --update nodejs
-COPY --from=build /usr/src/app /app
-EXPOSE 5000
-CMD ["node", "server.js"]
-
-### Client Dockerfile
-
-FROM node:14-slim AS build
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN npm install
-COPY . .
-
-FROM alpine:3.16.7
-WORKDIR /app
-RUN apk update && apk add npm
-COPY --from=build /usr/src/app /app
-EXPOSE 3000
-CMD ["npm", "start"]
-
-
-## docker-compose.yml
-
-version: "3.8"
-
-services:
-
-  app-client:
-    build: ./client
-    stdin_open: true
-    tty: true
-    ports:
-      - "3000:3000"
-    depends_on: 
-      - app-backend
-    networks:
-      - app-net
-
-  app-backend:
-    build: ./backend
-    stdin_open: true
-    tty: true
-    restart: always
-    ports:
-      - "5000:5000"
-    depends_on: 
-      - app-ip-mongo
-    networks:
-      - app-net
-
- 
-  app-ip-mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - app-net
-    volumes:
-      - type: volume
-        source: app-mongo-data
-        target: /data/db
-
+All services run in the Docker network app-net, ensuring containers can discover and communicate internally.
 
 networks:
-  app-net:
-    name: app-net
-    driver: bridge
-    attachable: true
+  - name: app-net
 
+Deployment Steps
 
-volumes:
-  app-mongo-data:
-    driver: local
+1. Clone the repo
+2. Run:
 
+vagrant up 
+vagrant up --provision
 
-### Key Features
+This will:
+- Provision the VM using VirtualBox
+- Trigger Ansible to install Docker, set up roles, and run containers
 
-- Networking: All services communicate via `app-net` (bridge).
-- Volumes: `app-mongo-data` ensures mongo data persistence.
-- Image tagging: Follows the format `name:v1.0.0` for clarity.
+Verification
 
+Once setup is complete:
+- Visit http://<VM_IP>:3000 to access the YOLO App frontend
+- API runs on port 5000
+- MongoDB accessible on port 27017
 
-## Git Workflow
-
-git init
-git remote add origin https://github.com/NicholasMariga/yolo.git
-git checkout -b master
-git add .
-git commit -m "Initial commit"
-git push -u origin master
-
-##  Debugging Measures
-
-- Check container logs:
-  
-  docker-compose logs app-backend
-  docker-compose logs app-client
-  
-- Interactive shell into a container:
-
-  docker exec -it app-backend sh
-  
-- Rebuild containers:
- 
-  docker-compose up --build --force-recreate
-  
-## Best Practices Followed
-
-- Multi-stage Docker builds for optimized image size.
-- Lightweight base images: `node:14`, `alpine:3.16.7`.
-- Image tags for versioning: `v1.0.0`.
-- Volume usage for database persistence.
-- Custom bridge network to isolate services.
-
-## Docker pull images
-
-docker pull marigah/yolo_app-client
-
-docker pull marigah/yolo_app-backend
-
-## Screenshot from DockerHub
-
-![DockerHub](./images/dockerhub-screenshot.png)
-
+Use docker ps inside the VM to confirm containers are running.
 
