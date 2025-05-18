@@ -1,119 +1,105 @@
+In this README.md is on both MINIKUBE and GKE as Orchestrators 
 
-YOLO App Deployment with Vagrant and Ansible
 
-Project Overview
+################ MINIKUBE ################
 
-This project demonstrates the automated provisioning and configuration of a 3-tier containerized web application called YOLO App, consisting of:
+Deploying your full-stack application (client (Frontend) + Backend + MongoDB) on Minikube, 
+including 
+    - Docker image building, 
+    - Kubernetes deployment, 
+    - service exposure, 
+    - key project explanations.
 
-- app-client (React frontend)
-- app-backend (Node.js backend)
-- app-ip-mongo (MongoDB)
 
-We use:
-- Vagrant for VM provisioning (VirtualBox),
-- Ansible for configuration management (roles, tasks),
-- Docker and Docker Compose to containerize and deploy the application.
+# Full-Stack Kubernetes App on Minikube (Frontend + Backend + MongoDB)
 
-Tech Stack
+This project demonstrates a full-stack web application composed of a React frontend, a Node.js backend, and MongoDB for storage. The app is containerized with Docker and deployed locally using Minikube and Kubernetes.
 
-| Layer         | Technology          |
-|---------------|---------------------|
-| Provisioning  | Vagrant (VirtualBox)|
-| OS            | Ubuntu 20.04        |
-| Configuration | Ansible             |
-| Runtime       | Docker              |
-| Backend       | Node.js             |
-| Frontend      | React               |
-| Database      | MongoDB             |
 
-Directory Structure
 
-├── Vagrantfile
-├── ansible.cfg
-├── inventory.yml
-├── hosts
-├── playbook.yaml
-├── backend
-├── client
-├── images
-├── roles/
-│   ├── app-mongodb/
-│   │   └── tasks/main.yml
-│   ├── app-backend/
-│   │   └── tasks/main.yml
-│   ├── app-client/
-│   │   └── tasks/main.yml
+## Tech Stack
 
-VM Provisioning
+- Client (Frontend): Node.js
+- Backend: Node.js + Express
+- Database: MongoDB
+- Orchestration: Kubernetes (Minikube)
+- Storage: PersistentVolume for MongoDB
+- Containerization: Docker
 
-We use Vagrant to provision a VirtualBox VM with bridged networking:
 
-Vagrantfile (Summary)
 
-Vagrant.configure("2") do |config|
-  config.vm.box = "geerlingguy/ubuntu2004"
-  config.vm.network "public_network" # Bridged
-  config.vm.provision "ansible" do |ansible|
-    ansible.playbook = "playbook.yaml"
-  end
-end
+## Project Structure
 
-Configuration Management with Ansible
+.
+├── backend/
+│   └── Dockerfile
+├── client/
+│   └── Dockerfile
+├── manifests/
+│   ├── backend-deployment.yaml
+│   ├── backend-service.yaml
+│   ├── client-deployment.yaml
+│   ├── client-service.yaml
+│   ├── mongo-statefulset.yaml
+│   └── mongo-service.yaml
+├── explanation.md
+└── README.md
 
-Ansible is structured using roles, with each major app component having its own role.
 
-Main Playbook: deploy.yml
 
----
-- name: Deploy YOLO App Stack
-  hosts: all
-  become: true
 
-  roles:
-    - app-mongodb
-    - app-backend
-    - app-client
 
-Role Breakdown
+##  Prerequisites
 
-1. app-mongodb
-- Creates Docker volume (app-mongo-data)
-- Creates Docker network (app-net)
-- Starts MongoDB container
+- Docker
+- Minikube installed
+- kubectl installed
 
-2. app-backend
-- Builds image from backend/Dockerfile
-- Starts container and connects to MongoDB
 
-3. app-client
-- Builds React frontend image
-- Starts container and connects to backend
 
-Container Networking
+##  Steps to Run Locally with Minikube
 
-All services run in the Docker network app-net, ensuring containers can discover and communicate internally.
+### 1. Start Minikube
+On terminal
 
-networks:
-  - name: app-net
+    minikube start
 
-Deployment Steps
 
-1. Clone the repo
-2. Run:
 
-vagrant up 
-vagrant up --provision
+### 2Build Docker Images
 
-This will:
-- Provision the VM using VirtualBox
-- Trigger Ansible to install Docker, set up roles, and run containers
+Backend
 
-Verification
+cd backend
+docker build -t marigah/backend-service:v2.0.0
 
-Once setup is complete:
-- Visit http://<VM_IP>:3000 to access the YOLO App frontend
-- API runs on port 5000
-- MongoDB accessible on port 27017
 
-Use docker ps inside the VM to confirm containers are running.
+Frontend
+
+cd ../client
+docker build -t marigah/client-service:v2.0.0
+
+
+### 3 Apply Kubernetes Manifests
+
+bash
+cd ../k8s
+
+kubectl apply -f mongo-service.yaml
+kubectl apply -f mongo-statefulset.yaml
+
+kubectl apply -f backend-deployment.yaml
+kubectl apply -f backend-service.yaml
+
+kubectl apply -f client-deployment.yaml
+kubectl apply -f client-service.yaml
+
+
+### 4. Expose client(Frontend) Service
+
+
+minikube service client-service
+
+
+This will open the app in your default browser using Minikube’s IP and NodePort.
 
