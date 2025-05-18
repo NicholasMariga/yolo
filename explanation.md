@@ -1,111 +1,42 @@
-YOLO APP - EXPLANATION
-
-This document explains how the YOLO App was implemented, highlighting the use of Vagrant, Ansible roles, Docker containers, and the step-by-step logic used.
-
-##  Overview
-
-The YOLO App is a 3-tier containerized web application consisting of:
-
-- MongoDB  – the database
-- Node.js (Express)  – the backend
-- React.js  – the frontend
-
-This application is deployed using  Docker containers , provisioned with  Vagrant  and automated using  Ansible .
-
-## Architecture
-React Frontend  <-->   Node.js Backend <-->   MongoDB DB
-(app-client)        (app-backend)       (app-ip-mongo)
-
-All containers are connected via Docker network `app-net`
-
-## Tech Stack
-                       
- Frontend --> React                      
- Backend  --> Node.js + Express          
- Database --> MongoDB                    
- Containerization --> Docker                     
- Provisioning --> agrant, VirtualBox
- Automation   --> Ansible        
 
 
-## Docker Containers
+## Explanation of Architecture
 
-1. Frontend Container
-    Name: app-client
-    Role: React App
-    port: 3000
+### 1. Kubernetes Object Choices
 
-2. Backend Container
-    Name: app-backend
-    Role: Node js 
-    port: 5000
+* MongoDB is deployed as a StatefulSet with a persistent volume.
+* Frontend and backend are deployed using Deployments since they are stateless.
 
-2. Batabase Container
-    Name: app-mongodb
-    Role: MongoDB 
-    port: 27017
+### 2. Exposure
 
-Backend API connects to database over app-net
-MongoDB uses volume for persistent storage
+* The frontend is exposed via a NodePort service using minikube service.
+* Backend and MongoDB are ClusterIP services for internal communication.
 
-## How It Works
+### 3. Persistent Storage
 
-### 1. MongoDB
-- Started via Ansible with volume for /data/db.
-- Uses Docker image mongo.
-
-### 2. Backend
-- Multi-stage Docker build:
-  - node:14 to install dependencies
-  - alpine:3.16.7 for minimal runtime
-- Connects to MongoDB via Docker network.
-- Exposes port 5000.
-
-### 3. Frontend
-- Uses npm start (development mode).
-- Exposes port 3000.
-- Container may exit if not run in interactive mode or not built for production (`serve -s build` recommended for production).
-
-### 4. Docker Networking
-All containers connect to a custom Docker network named `app-net`.
-
-### 5. Ansible Automation
-- Handles:
-  - Docker image builds
-  - Container launches
-  - Docker network and volume setup
-
-### 6. Vagrant
-- Provisions a VM with bridged networking so you can access the app from your browser.
-
-  
-
-## Accessing the Application
-
-1. Ensure Vagrant is configured for bridged networking in your `Vagrantfile`:
-
-   config.vm.network "public_network"
+* MongoDB uses a PVC backed by hostPath storage in Minikube for data persistence.
 
 
-2. After provisioning:
-   -  Frontend : `http://<VM-IP>:3000`
-   -  Backend  : `http://<VM-IP>:5000`
 
-Replace `<VM-IP>` with your VirtualBox VM's bridged IP address.
+## Testing and Debugging
 
 
-## Execution
+* View services
 
-vagrant up --provision
+kubectl get services
 
-Or, if the VM is already up:
+* View running pods:
 
-vagrant provision
+kubectl get pods
 
 
-## Screenshot
+* View logs:
 
-![DockerHub](./images/Screenshotfrom2025-05-0500-21-53.png)
+kubectl logs <pod-name>
 
-![site](./images/Screenshotfrom2025-05-0500-21-53.png)
+
+* Enter a container:
+
+kubectl exec -it <pod-name> -- /bin/sh
+
 
