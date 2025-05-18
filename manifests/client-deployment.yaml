@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: frontend-deployment
 spec:
+  replicas: 2
   selector:
     matchLabels:
       app: frontend-deployment
@@ -23,3 +24,5 @@ spec:
             cpu: "450m"
         ports:
         - containerPort: 3000
+        tty: true
+        stdin: true

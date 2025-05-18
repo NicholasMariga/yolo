@@ -24,3 +24,6 @@ spec:
             cpu: "500m"
         ports:
         - containerPort: 5000
+        env:
+          - name: MONGO_URL
+            value: "mongodb://mongo-0.:27017"
