@@ -13,13 +13,13 @@ spec:
     spec:
       containers:
       - name: frontend-deployment
-        image: marigah/frontend-service:v2.0.0
+        image: marigah/client-service:v2.0.0
         resources:
           requests:
             memory: "64Mi"
             cpu: "250m"
           limits:
             memory: "128Mi"
-            cpu: "500m"
+            cpu: "450m"
         ports:
         - containerPort: 3000

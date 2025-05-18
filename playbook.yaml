@@ -1,7 +1,7 @@
 ---
 - name: Deploy YOLO Application
   hosts: all
-  become: yes
+  become: true
 
   vars:
     app_dir: /opt/yolo
