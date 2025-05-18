@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: frontend-deployment
-        image: <marigah/frontend-service:v2.0.0
+        image: marigah/frontend-service:v2.0.0
         resources:
           limits:
             memory: "128Mi"
