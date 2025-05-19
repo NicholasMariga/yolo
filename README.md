@@ -72,20 +72,20 @@ On terminal
 Backend
 
 cd backend
-docker build -t marigah/backend-service:v2.0.0
+docker build -t marigah/backend-service:v2.0.0 .
 docker push marigah/backend-service:v2.0.0 
 
 
 Client
 
 cd ../client
-docker build -t marigah/client-service:v2.0.0
+docker build -t marigah/client-service:v2.0.0 .
 docker push marigah/client-service:v2.0.0 
 
 
 ### 3 Apply Kubernetes Manifests
 
-bash
+
 cd ../manifests
 
 kubectl apply -f mongo-service.yaml
@@ -106,7 +106,10 @@ minikube service client-service
 
 This will open the app in your default browser using Minikube’s IP and NodePort.
 
+http://192.168.59.100:32000
 
+
+![DockerHub](./images/Screenshot_app_minikube.png)
 
 ############### GKE #############################
 
